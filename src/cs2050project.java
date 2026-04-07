@@ -16,13 +16,25 @@ public class cs2050project
  */
 class Hangar
 {
-    ArrayList<Drone> dronesList;
+    ArrayList<Drone> dronesList; // We will use Arraylists
 
+    /**
+     * Iterates through ArrayList in Hangar Class and increments counter if manufacturer name matches input string.
+     * @param manufacturer
+     * @return count
+     */
     public int getCountByManufacturer(String manufacturer)
     {
-        int count;
-        count = 0;
+        int count = 0;
 
+        for (int i = 0; i < dronesList.size();i++) // for loop iterating for ArrayList
+        {
+            if (dronesList.get(i).getManufacturer() == manufacturer) // Can use Instanceof
+            {
+                count++;
+            }
+        }
+        
         return count;
     }
 
@@ -33,32 +45,43 @@ class Hangar
 
     public void generateReportSortedByPayloadCapacity(ArrayList<Drone>dronesList)
     {
+        /** TODO:
+         *  1. Sort list into new Array by Payload Capacity 
+         *  2. Print the output of the list (either during runtime or after the sort)
+         */
 
     }
 
     public void displayHangarInventory()
     {
-
+        //Display formatted printout of inventory
     }
 
     public void showMenu()
     {
+        // TODO: While loop with Switch Case inside
 
     }
 
     public boolean addDrone(Drone drone)
     {
-        if (drone == null)
-        {
-            return false;
-        }
-        else
+        // redudancy null check
+        if (drone != null)
         {
             this.dronesList.add(drone);
             return true;
         }
+        else
+        {
+            return false;
+        }
     }
 
+    /**
+     * Read From CSV uses an input CSV file in directory to load and then parse to a readable format.
+     * @param hangar
+     * @param fileName
+     */
     public static void readFromCSV(Hangar hangar, String fileName)
     {
         int totalLinesRead = 0;
@@ -69,25 +92,32 @@ class Hangar
             return;
         }
 
+        // try catch 
         try(Scanner fileScan = new Scanner(new File(fileName)))
         {
+            // Continuous checking to iterate through entire file
             while (fileScan.hasNextLine())
             {
                 String line = fileScan.nextLine();
+
+                // Increment totalLinesRead to keep track of lines and add drones
                 totalLinesRead = totalLinesRead + 1;
                 boolean shouldProcess = true;
+                
                 if (line == null || line.trim().isEmpty())
                 {
                     shouldProcess = false;
                 }
-
+                
+                // If conditionals above are true then we can proceed and prepare to parse and add a drone
                 if(shouldProcess == true)
                 {
+                    // Send to helper method to parse the drone line into a new drone
                     Drone newDrone = parseDroneLine(line,totalLinesRead);
+
                     if (newDrone != null)
                     {
                         boolean added = hangar.addDrone(newDrone);
-
                         if (added == false)
                         {
                             System.out.println("Error. Unable to add Drone.");
@@ -97,7 +127,7 @@ class Hangar
                 }
             }
         }
-        catch (FileNotFoundException ex) 
+        catch (FileNotFoundException ex)
         {
             System.out.println("Error. Could not open file: " + fileName);
             return;
@@ -105,6 +135,12 @@ class Hangar
 
     }
 
+    /**
+     * 
+     * @param line
+     * @param LineNumber
+     * @return
+     */
     private static Drone parseDroneLine(String line, int LineNumber)
     {
         /**TODO: 
@@ -114,8 +150,10 @@ class Hangar
          * Use Try-Catch for year and payloadKG checking and if statements for year
         */
 
-        String[] fields = line.split(",");
-        String droneType = fields[0].trim();
+        String[] fields = line.split(","); // CSV -> Comma Seperated Values
+        
+        // Utilize array of our four inputs that we need: If P or S, Name, Year, Weight Limit and store them into variables
+        String droneType = fields[0].trim(); 
         String manufacturerName = fields[1].trim();
         String manufacturerYear = fields[2].trim();
         String payloadKg = fields[3].trim();
@@ -135,8 +173,8 @@ class Hangar
     }
 }
 
-/**
- * 
+/** 
+ * Abstract Drone class used for creation of Priority and Standard Drones.
  */
 abstract class Drone
 {
@@ -150,7 +188,22 @@ abstract class Drone
         this.manufacturerYear = manufacturerYear;
         this.payloadKg = payloadKg;
     }
-    
+
+    public String getManufacturer()
+    {
+        return this.manufacturerName;
+    }
+
+    public int getManufacturerYear()
+    {
+        return this.manufacturerYear;
+    }
+
+    public double getPayloadKg()
+    {
+        return this.payloadKg;
+    }
+
     @Override
     public String toString(){
         String toString = "";
@@ -159,7 +212,7 @@ abstract class Drone
 }
 
 /**
- * 
+ * Priority Drone
  */
 class PriorityDrone extends Drone
 {
@@ -171,7 +224,7 @@ class PriorityDrone extends Drone
 }
 
 /**
- * 
+ * Standard Drone
  */
 class StandardDrone extends Drone
 {
