@@ -59,7 +59,43 @@ class Hangar
 
     public void showMenu()
     {
-        // TODO: While loop with Switch Case inside
+        // TODO: Null check -> while isvalid, Use Switch Case for the rest
+        Scanner input = new Scanner(System.in);
+        boolean bool = true;
+
+        String menu[] = {
+                         "1. Load Drones from CSV",
+                         "2. Display Hangar Inventory", 
+                         "3. Search Drones (Manufacturer & Type)", 
+                         "4. View Inventory Sorted by Payload (Manual Sort)",
+                         "5. View Inventory Sorted by Year (Manual Sort)",
+                         "6. Count Drones by Manufacturer",
+                         "7. Exit"
+                        };
+
+        while (bool == true)
+        {
+            System.out.println("=== Drone Hangar Menu ===");
+
+            for (int i = 0; i < menu.length; i++)
+            {
+                System.out.println(menu[i]);
+            }
+
+            System.out.println("Enter your Choice(1-7): ");
+            int output = input.nextInt();
+
+            // use Switch case For choices AFTER checking
+            switch (output)
+            {
+                case 1:
+
+                case 2:
+
+                default:
+            }
+
+        }
 
     }
 
@@ -149,6 +185,10 @@ class Hangar
          * Validate text fields (Type of drone, ManufacturerName, ManufacturerYear, weight limit in KG)
          * Use Try-Catch for year and payloadKG checking and if statements for year
         */
+        if (line.trim().isEmpty() || line == null)
+        {
+            return null;
+        }
 
         String[] fields = line.split(","); // CSV -> Comma Seperated Values
         
@@ -158,16 +198,11 @@ class Hangar
         String manufacturerYear = fields[2].trim();
         String payloadKg = fields[3].trim();
 
-        if (line.trim().isEmpty() || line == null)
-        {
-            return null;
-        }
         if (fields.length != 4)
         {
             System.out.println("Error. Invalid number of columns. Expected 4, recieved " + fields.length);
             return null;
         }
-
 
         return Drone;
     }
