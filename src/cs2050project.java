@@ -70,9 +70,12 @@ class Hangar {
 
     public void displayHangarInventory() {
         // Display formatted printout of inventory
+        for (Drone currentDrone : dronesList) {
+            System.out.println(currentDrone);
+        }
     }
 
-    public void showMenu() {
+    public void showMenu(Hangar hangar) {
         // TODO: Null check -> while isvalid, Use Switch Case for the rest
         // Refer to L16
         Scanner input = new Scanner(System.in);
@@ -107,8 +110,13 @@ class Hangar {
                 switch (response) {
                     case 1:
                         // Load drones from CSV
+                        System.out.println("Type filename");
+                        String filename = input.next();
+                        readFromCSV(hangar, filename);
+
                     case 2:
-                        // Display hangar inventory
+                        // Display Hangar inventory
+                        displayHangarInventory();
                     case 3:
                         // Search Drones (Manufacturer & Type)
                     case 4:
