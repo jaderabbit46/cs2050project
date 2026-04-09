@@ -262,7 +262,7 @@ class Hangar {
             return null;
         }
 
-        // year validity check
+        // Year check
         int manufacturerYear;
         double payloadKg;
         try {
@@ -275,6 +275,7 @@ class Hangar {
             return null;
         }
 
+        // Type check
         if (type.toUpperCase() == "S") {
             Drone parsedDrone = new StandardDrone(name, manufacturerYear, payloadKg);
             return parsedDrone;
