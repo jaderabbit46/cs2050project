@@ -40,6 +40,10 @@ class Hangar {
         return count;
     }
 
+    public void searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) {
+
+    }
+
     public void generateReportSortedByManufacturingYear(ArrayList<Drone> dronesList) {
 
     }
@@ -92,7 +96,7 @@ class Hangar {
         };
 
         // test ex look at lab16
-        // Use
+        // TODO: YOU!! YES YOU!!! MAKE A HELPER METHOD FOR ERROR CHECKING PLEASE
         while (runtime) {
             System.out.println("=== Drone Hangar Menu ===");
 
@@ -119,10 +123,26 @@ class Hangar {
                         displayHangarInventory();
                     case 3:
                         // Search Drones (Manufacturer & Type)
+                        System.out.println("Type the Manufacturer: ");
+                        String manufacturer = input.next();
+
+                        boolean isValid = false;
+                        while (isValid) {
+                            System.out.println("Type S for Standard and P for Priority: ");
+                            String droneType = input.next();
+                            // TODO: FIX THIS
+                            if (droneType == "S" || droneType == "P") {
+                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                            } else {
+                                System.out.println("Error. Invalid character. Expected S or P. Got: " + droneType);
+                            }
+                        }
                     case 4:
                         // View Inventory by Payload
+                        displayHangarInventory();
                     case 5:
                         // View Inventory by Year
+
                     case 6:
                         // Count drone by manufacturer
                     case 7:
@@ -215,16 +235,8 @@ class Hangar {
      * @param LineNumber
      * @return
      */
-    private static Drone parseDroneLine(String line, int LineNumber) {
-        /**
-         * TODO:
-         * Check if the line is empty (or null)
-         * Trim fields
-         * Validate text fields (Type of drone, ManufacturerName, ManufacturerYear,
-         * weight limit in KG)
-         * Use Try-Catch for year and payloadKG checking and if statements for year
-         * Pretty iffy- find lecture for the lab
-         */
+    private static Drone parseDroneLine(String line, int lineNumber) {
+
         if (line.trim().isEmpty() || line == null) {
             return null;
         }
@@ -233,17 +245,46 @@ class Hangar {
 
         // Utilize array of our four inputs that we need: If P or S, Name, Year, Weight
         // Limit and store them into variables
-        String droneType = fields[0].trim();
-        String manufacturerName = fields[1].trim();
-        String manufacturerYear = fields[2].trim();
-        String payloadKg = fields[3].trim();
+        String type = fields[0].trim();
+        String name = fields[1].trim();
+        String year = fields[2].trim();
+        String payload = fields[3].trim();
 
+        // Fields Check
         if (fields.length != 4) {
-            System.out.println("Error. Invalid number of columns. Expected 4, recieved " + fields.length);
+            System.out.println("Error. Invalid number of fields at line " + lineNumber + ".\nExpected 4, recieved "
+                    + fields.length);
+            return null;
+        }
+        // Name Check
+        if (name.isEmpty()) {
+            System.out.println("Error. Line at " + lineNumber + ". No manufacturer name found.");
             return null;
         }
 
-        return Drone;
+        // year validity check
+        int manufacturerYear;
+        double payloadKg;
+        try {
+            manufacturerYear = Integer.parseInt(year);
+            payloadKg = Double.parseDouble(payload);
+
+        } catch (NumberFormatException ex) {
+            System.out.println(
+                    "Error. Line at " + lineNumber + " has invalid year and or weight capacity(Is it a number?).");
+            return null;
+        }
+
+        if (type.toUpperCase() == "S") {
+            Drone parsedDrone = new StandardDrone(name, manufacturerYear, payloadKg);
+            return parsedDrone;
+        } else if (type.toUpperCase() == "P") {
+            Drone parsedDrone = new PriorityDrone(name, manufacturerYear, payloadKg);
+            return parsedDrone;
+        } else {
+            System.out.println("Error. Invalid drone type at line " + lineNumber + ".\nExpected S or P. Got " + type);
+            return null;
+        }
     }
 }
 
@@ -284,8 +325,27 @@ abstract class Drone {
  * Priority Drone
  */
 class PriorityDrone extends Drone {
+    private String manufacturerName;
+    private int manufacturerYear;
+    private double payloadKg;
+
     public PriorityDrone(String manufacturerName, int manufacturerYear, double payloadKg) {
         super(manufacturerName, manufacturerYear, payloadKg);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return this.manufacturerName;
+    }
+
+    @Override
+    public int getManufacturerYear() {
+        return this.manufacturerYear;
+    }
+
+    @Override
+    public double getPayloadKg() {
+        return this.payloadKg;
     }
 
 }
@@ -294,8 +354,27 @@ class PriorityDrone extends Drone {
  * Standard Drone
  */
 class StandardDrone extends Drone {
+    private String manufacturerName;
+    private int manufacturerYear;
+    private double payloadKg;
+
     public StandardDrone(String manufacturerName, int manufacturerYear, double payloadKg) {
         super(manufacturerName, manufacturerYear, payloadKg);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return this.manufacturerName;
+    }
+
+    @Override
+    public int getManufacturerYear() {
+        return this.manufacturerYear;
+    }
+
+    @Override
+    public double getPayloadKg() {
+        return this.payloadKg;
     }
 
 }
