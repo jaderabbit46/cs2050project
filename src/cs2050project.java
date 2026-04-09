@@ -47,10 +47,24 @@ class Hangar {
     public void generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) {
         /**
          * TODO:
-         * 1. Sort list into new Array by Payload Capacity
+         * 1. Sort list into new Array by Payload Capacity (use Clone or something)
+         * 2. Do a simple comparison sort (i.e. Selection sort)
          * 2. Print the output of the list (either during runtime or after the sort)
          * 3.
          */
+
+        // MUST use Implicit casting since .clone() returns an object.
+        ArrayList<Drone> sortedPayloadKG = (ArrayList<Drone>) dronesList.clone();
+
+        for (int i = 0; i < sortedPayloadKG.size() - 1; i++)
+        {
+            //int min = (int) sortedPayloadKG.get(i);
+            
+            for (int j = i + 1; j < sortedPayloadKG.get(i).getPayloadKg(); j++)
+            {
+                if (sortedPayloadKG.get(i).getPayloadKg() < sortedPayloadKG.get(min).getPayloadKg())
+            }
+        }
 
     }
 
