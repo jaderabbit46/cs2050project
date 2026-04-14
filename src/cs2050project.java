@@ -6,9 +6,14 @@ import java.util.Scanner;
 /**
  * 
  */
-public class cs2050project {
-    public static void main(String[] args) {
-        // Create hanger in main
+public class cs2050project 
+{
+    public static void main(String[] args) 
+    {
+        //TODO: CTRL + , :: Change VScode formatting for curly brackets to newline ONLY. 
+        //TODO: Format: Place Open Brace on New Line and Place Open Brace on New Line for Functions 
+        Hangar hangar1 = new Hangar();
+        hangar1.showMenu(hangar1);
     }
 }
 
@@ -29,9 +34,9 @@ class Hangar {
     public int getCountByManufacturer(String manufacturer) {
         int count = 0;
 
-        for (int i = 0; i < dronesList.size(); i++) // for loop iterating for ArrayList
+        for (int i = 0; i < dronesList.size(); i++) 
         {
-            if (dronesList.get(i).getManufacturer() == manufacturer) // Can use Instanceof
+            if (dronesList.get(i).getManufacturer() == manufacturer) 
             {
                 count++;
             }
@@ -40,48 +45,83 @@ class Hangar {
         return count;
     }
 
-    public void searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) {
-
+    public void searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) 
+    {
+        //TODO:
     }
 
     public void generateReportSortedByManufacturingYear(ArrayList<Drone> dronesList) {
 
-    }
+        ArrayList<Drone> sortedByYear = new ArrayList<>(dronesList);
 
-    public void generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) {
-        /**
-         * TODO:
-         * 1. Sort list into new Array by Payload Capacity (use Clone or something)
-         * 2. Do a simple comparison sort (i.e. Selection sort)
-         * 2. Print the output of the list (either during runtime or after the sort)
-         * 3.
-         */
-
-        // MUST use Implicit casting since .clone() returns an object.
-        ArrayList<Drone> sortedPayloadKG = (ArrayList<Drone>) dronesList.clone();
-
-        for (int i = 0; i < sortedPayloadKG.size() - 1; i++)
+        for (int i = 0; i < sortedByYear.size() - 1; i++)
         {
-            //int min = (int) sortedPayloadKG.get(i);
+            int min = i;
             
-            for (int j = i + 1; j < sortedPayloadKG.get(i).getPayloadKg(); j++)
+            for (int j = i + 1; j < sortedByYear.size(); j++)
             {
-                if (sortedPayloadKG.get(i).getPayloadKg() < sortedPayloadKG.get(min).getPayloadKg())
+                if (sortedByYear.get(j).getManufacturerYear() < sortedByYear.get(min).getManufacturerYear())
+                {
+                    min = j;
+                }
+            }
+
+            // Use <arraylist>.set(i, temp)
+            if (min != i)
+            {
+                Drone temp = sortedByYear.get(i);
+                sortedByYear.set(i, sortedByYear.get(min));
+                sortedByYear.set(min, temp);
             }
         }
 
     }
 
-    public void displayHangarInventory() {
+    public void generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) 
+    {
+        /**
+         * TODO:
+         * 1. Sort list into new Array by Payload Capacity (use Clone or something)
+         * 2. Do a simple comparison sort (i.e. Selection sort)
+         * 3. Sort by payloadKG and sort into arraylist of drones
+         * 4. Print the output of the list (either during runtime or after the sort)
+         */
+
+        ArrayList<Drone> sortedPayloadKG = new ArrayList<>(dronesList);
+
+        for (int i = 0; i < sortedPayloadKG.size() - 1; i++)
+        {
+            int min = i;
+            
+            for (int j = i + 1; j < sortedPayloadKG.size(); j++)
+            {
+                if (sortedPayloadKG.get(j).getPayloadKg() < sortedPayloadKG.get(min).getPayloadKg())
+                {
+                    min = j;
+                }
+            }
+
+            // Use <arraylist>.set(i, temp)
+            if (min != i)
+            {
+                Drone temp = sortedPayloadKG.get(i);
+                sortedPayloadKG.set(i, sortedPayloadKG.get(min));
+                sortedPayloadKG.set(min, temp);
+            }
+        }
+
+    }
+
+    public void displayHangarInventory() 
+    {
         // Display formatted printout of inventory
-        for (Drone currentDrone : dronesList) {
+        for (Drone currentDrone : dronesList) 
+        {
             System.out.println(currentDrone);
         }
     }
 
     public void showMenu(Hangar hangar) {
-        // TODO: Null check -> while isvalid, Use Switch Case for the rest
-        // Refer to L16
         Scanner input = new Scanner(System.in);
         boolean runtime = true;
 
@@ -95,8 +135,6 @@ class Hangar {
                 "7. Exit"
         };
 
-        // test ex look at lab16
-        // TODO: YOU!! YES YOU!!! MAKE A HELPER METHOD FOR ERROR CHECKING PLEASE
         while (runtime) {
             System.out.println("=== Drone Hangar Menu ===");
 
@@ -105,7 +143,6 @@ class Hangar {
             }
 
             System.out.println("Enter your Choice: ");
-            int output = input.nextInt();
 
             if (input.hasNextInt()) {
                 int response = input.nextInt();
@@ -117,39 +154,56 @@ class Hangar {
                         System.out.println("Type filename");
                         String filename = input.next();
                         readFromCSV(hangar, filename);
-
+                        break;
                     case 2:
                         // Display Hangar inventory
                         displayHangarInventory();
+                        break;
                     case 3:
                         // Search Drones (Manufacturer & Type)
                         System.out.println("Type the Manufacturer: ");
                         String manufacturer = input.next();
+                        input.nextLine();
 
-                        boolean isValid = false;
-                        while (isValid) {
-                            System.out.println("Type S for Standard and P for Priority: ");
-                            String droneType = input.next();
-                            // TODO: FIX THIS
-                            if (droneType == "S" || droneType == "P") {
-                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
-                            } else {
-                                System.out.println("Error. Invalid character. Expected S or P. Got: " + droneType);
-                            }
+                        System.out.println("Type S for Standard and P for Priority: ");
+                        String droneType = input.next();
+                        input.nextLine();
+                        if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
+                        {
+                            searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                        } 
+                        else 
+                        {
+                            System.out.println("Error. Invalid character. Expected S or P. Got: " + droneType);
                         }
+                        
+                        break;
                     case 4:
                         // View Inventory by Payload
                         displayHangarInventory();
+                        break;
                     case 5:
                         // View Inventory by Year
-
+                        generateReportSortedByManufacturingYear(dronesList);
+                        break;
                     case 6:
                         // Count drone by manufacturer
+                        System.out.println("Type the Manufacturer: ");
+                        manufacturer = input.next();
+                        input.nextLine();
+
+                        int count = getCountByManufacturer(manufacturer);
+
+                        //TODO: print out the count of drones based of manufacturer.
+                        break;
                     case 7:
                         // Exit
-
+                        System.out.println("Exiting...");
+                        runtime = false;
+                        break;
                     default:
                         System.out.println("Invalid selection. Please pick from 1-" + menu.length);
+                        break;
                 }
 
             } else {
@@ -159,6 +213,7 @@ class Hangar {
 
         }
 
+        input.close();
     }
 
     /**
@@ -185,37 +240,44 @@ class Hangar {
      * @param hangar
      * @param fileName
      */
-    public static void readFromCSV(Hangar hangar, String fileName) {
+    public static void readFromCSV(Hangar hangar, String fileName) 
+    {
         int totalLinesRead = 0;
 
-        if (hangar == null) {
+        if (hangar == null) 
+        {
             System.out.println("Error. Hangar not found.");
             return;
         }
 
-        // try catch
-        try (Scanner fileScan = new Scanner(new File(fileName))) {
+        try (Scanner fileScan = new Scanner(new File(fileName))) 
+        {
             // Continuous checking to iterate through entire file
-            while (fileScan.hasNextLine()) {
+            while (fileScan.hasNextLine()) 
+                {
                 String line = fileScan.nextLine();
 
                 // Increment totalLinesRead to keep track of lines and add drones
                 totalLinesRead = totalLinesRead + 1;
                 boolean shouldProcess = true;
 
-                if (line == null || line.trim().isEmpty()) {
+                if (line == null || line.trim().isEmpty()) 
+                {
                     shouldProcess = false;
                 }
 
                 // If conditionals above are true then we can proceed and prepare to parse and
                 // add a drone
-                if (shouldProcess == true) {
+                if (shouldProcess == true) 
+                {
                     // Send to helper method to parse the drone line into a new drone
                     Drone newDrone = parseDroneLine(line, totalLinesRead);
 
-                    if (newDrone != null) {
+                    if (newDrone != null) 
+                    {
                         boolean added = hangar.addDrone(newDrone);
-                        if (added == false) {
+                        if (added == false) 
+                        {
                             System.out.println("Error. Unable to add Drone.");
                         }
 
