@@ -6,7 +6,7 @@ import java.util.Scanner;
 /**
  * 
  */
-public class cs2050project 
+public class cs2050ProjectIteration01
 {
     public static void main(String[] args) 
     {
@@ -16,11 +16,11 @@ public class cs2050project
 }
 
 /**
- * 
+ * Driver Class
+ * Hangar that stores, sorts, searches, and contains menuing for drones.
  */
 class Hangar 
 {
-
     ArrayList<Drone> dronesList = new ArrayList<Drone>(); // We will use Arraylists
 
     /**
@@ -36,7 +36,7 @@ class Hangar
 
         for (int i = 0; i < dronesList.size(); i++) 
         {
-            if (dronesList.get(i).getManufacturer() == manufacturer) 
+            if (dronesList.get(i).getManufacturer().equalsIgnoreCase(manufacturer)) 
             {
                 count++;
             }
@@ -44,43 +44,49 @@ class Hangar
 
         return count;
     }
-
+    /**
+     * Creates a new arraylist with a copy of droneList and uses binary search.
+     * Checks for each drone in dronesList if they match the search requirements and if true adds to the new list.
+     * @param dronesList
+     * @param manufacturer
+     * @param type
+     */
     public void searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) 
     {
-
-        if (dronesList == null || dronesList.isEmpty())
-        {
-            System.out.println("Error. No Drones in Hangar.");
-            return;
-        }
-
-        ArrayList<Drone> searchList = new ArrayList<Drone>();
+        ArrayList<Drone> searchList = new ArrayList<>();
 
         for (int i = 0; i < dronesList.size(); i++)
         {
             if (dronesList.get(i).getManufacturer().equalsIgnoreCase(manufacturer))
             {
-               if(dronesList.get(i) instanceof PriorityDrone && type.equalsIgnoreCase("Priority"))
+               if (type.equalsIgnoreCase("Priority") || type.equalsIgnoreCase("P"))
                {
-                    searchList.set(i, dronesList.get(i));
+                    searchList.add(dronesList.get(i));
                }
-               if(dronesList.get(i) instanceof StandardDrone && type.equalsIgnoreCase("Standard"))
+               if (type.equalsIgnoreCase("Standard") || type.equalsIgnoreCase("S"))
                {
-                    searchList.set(i, dronesList.get(i));
+                    searchList.add(dronesList.get(i));
                }
             }
         }
+
+        for (int i = 0; i < searchList.size(); i++) 
+        {
+            System.out.println(searchList.get(i));
+        }
     }
 
+    /**
+     * Creates a copy of dronesList and uses Selection sort to make a sorted arrayList by year (oldest to latest)
+     * @param dronesList
+     */
     public void generateReportSortedByManufacturingYear(ArrayList<Drone> dronesList) 
     {
-
         ArrayList<Drone> sortedByYear = new ArrayList<>(dronesList);
 
         for (int i = 0; i < sortedByYear.size() - 1; i++)
         {
             int min = i;
-
             for (int j = i + 1; j < sortedByYear.size(); j++)
             {
                 if (sortedByYear.get(j).getManufacturerYear() < sortedByYear.get(min).getManufacturerYear())
@@ -88,8 +94,6 @@ class Hangar
                     min = j;
                 }
             }
-
-            // Use <arraylist>.set(i, temp)
             if (min != i)
             {
                 Drone temp = sortedByYear.get(i);
@@ -98,24 +102,25 @@ class Hangar
             }
         }
 
+        for (int i = 0; i < sortedByYear.size(); i++)
+        {
+            System.out.println(sortedByYear.get(i));
+        }
+
     }
 
+    /**
+     * Creates a copy of dronesList and uses selection sort to make a sorted arrayList by payload capacity.
+     * @param dronesList
+     */
     public void generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) 
     {
-        /**
-         * TODO:
-         * 1. Sort list into new Array by Payload Capacity (use Clone or something)
-         * 2. Do a simple comparison sort (i.e. Selection sort)
-         * 3. Sort by payloadKG and sort into arraylist of drones
-         * 4. Print the output of the list (either during runtime or after the sort)
-         */
 
         ArrayList<Drone> sortedPayloadKG = new ArrayList<>(dronesList);
 
         for (int i = 0; i < sortedPayloadKG.size() - 1; i++)
         {
             int min = i;
-            
             for (int j = i + 1; j < sortedPayloadKG.size(); j++)
             {
                 if (sortedPayloadKG.get(j).getPayloadKg() < sortedPayloadKG.get(min).getPayloadKg())
@@ -123,7 +128,6 @@ class Hangar
                     min = j;
                 }
             }
-
             // Use <arraylist>.set(i, temp)
             if (min != i)
             {
@@ -133,17 +137,30 @@ class Hangar
             }
         }
 
+        // Print output
+        for (int i = 0; i < sortedPayloadKG.size(); i++) 
+        {
+            System.out.println(sortedPayloadKG.get(i));
+        }
+
     }
 
+    /**
+     * Displays every drone in droneList
+     */
     public void displayHangarInventory() 
     {
-        // Display formatted printout of inventory
-        for (Drone currentDrone : dronesList) 
+        for (int i = 0; i < dronesList.size(); i++) 
         {
-            System.out.println(currentDrone);
+            System.out.println(dronesList.get(i));
         }
     }
 
+    /**
+     * Menu system that uses case switching to determine output
+     * There might be a better way of null checking (Method null-checking vs menu null-checking)
+     * @param hangar
+     */
     public void showMenu(Hangar hangar)
     {
         Scanner input = new Scanner(System.in);
@@ -185,30 +202,59 @@ class Hangar
                         break;
                     case 2:
                         // Display Hangar inventory
-                        displayHangarInventory();
+
+                        if (dronesList == null || dronesList.isEmpty())
+                        {
+                            System.out.println("Error. No Drones in Hangar.");
+                        }
+                        else
+                        {
+                            displayHangarInventory();
+                        }
                         break;
                     case 3:
                         // Search Drones (Manufacturer & Type)
-                        System.out.println("Type the Manufacturer: ");
-                        String manufacturer = input.next();
-                        input.nextLine();
-
-                        System.out.println("Type S for Standard and P for Priority: ");
-                        String droneType = input.next();
-                        input.nextLine();
-                        if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
+                        String manufacturer;
+                        String droneType;
+                        if (dronesList == null || dronesList.isEmpty())
                         {
-                            searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
-                        } 
-                        else 
-                        {
-                            System.out.println("Error. Invalid character. Expected S or P. Got: " + droneType);
+                            System.out.println("Error. No Drones in Hangar.");
                         }
-                        
+                        else
+                        {
+                            System.out.println("Type the Manufacturer: ");
+                            manufacturer = input.next();
+                            input.nextLine();
+
+                            System.out.println("Type S for Standard and P for Priority: ");
+                            droneType = input.next();
+                            input.nextLine();
+
+                            // Ultimately made it more type safe for testing so it checks both single letters and the word
+                            if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
+                            {
+                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                            } 
+                            else if (droneType.equalsIgnoreCase("Standard") || droneType.equalsIgnoreCase("Priority"))
+                            {
+                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                            }
+                            else 
+                            {
+                                System.out.println("Error. Invalid character. Expected S or P. Got: " + droneType);
+                            }
+                        }
                         break;
                     case 4:
                         // View Inventory by Payload
-                        displayHangarInventory();
+                        if (dronesList == null || dronesList.isEmpty())
+                        {
+                            System.out.println("Error. No Drones in Hangar.");
+                        }
+                        else
+                        {
+                            generateReportSortedByPayloadCapacity(dronesList);
+                        }
                         break;
                     case 5:
                         // View Inventory by Year
@@ -216,13 +262,18 @@ class Hangar
                         break;
                     case 6:
                         // Count drone by manufacturer
-                        System.out.println("Type the Manufacturer: ");
-                        manufacturer = input.next();
-                        input.nextLine();
-
-                        int count = getCountByManufacturer(manufacturer);
-                        System.out.println("Drones by " + manufacturer + " " + count);
-
+                        if (dronesList == null || dronesList.isEmpty())
+                        {
+                            System.out.println("Error. No Drones in Hangar.");
+                        }
+                        else
+                        {
+                            System.out.println("Type the Manufacturer: ");
+                            manufacturer = input.next();
+                            input.nextLine();
+                            int count = getCountByManufacturer(manufacturer);
+                            System.out.println("Drones by " + manufacturer + ": " + count);
+                        }
                         break;
                     case 7:
                         // Exit
@@ -233,7 +284,6 @@ class Hangar
                         System.out.println("Invalid selection. Please pick from 1-" + menu.length);
                         break;
                 }
-
             } 
             else 
             {
@@ -322,11 +372,10 @@ class Hangar
             System.out.println("Error. Could not open file: " + fileName);
             return;
         }
-
     }
 
     /**
-     * 
+     * Helper method to read a line given by readFromCSV. Returns a valid drone.
      * @param line
      * @param LineNumber
      * @return
@@ -340,6 +389,13 @@ class Hangar
         }
 
         String[] fields = line.split(","); // CSV -> Comma Seperated Values
+        
+        // Fields Check since split creates an array with segmented indexes based off of a comma.
+        if (fields.length != 4) 
+        {
+            System.out.println("Error. Invalid number of fields at line " + lineNumber + ".\nExpected 4, recieved "+ fields.length);
+            return null;
+        }
 
         // Utilize array of our four inputs that we need: If P or S, Name, Year, Weight
         // Limit and store them into variables
@@ -348,12 +404,6 @@ class Hangar
         String year = fields[2].trim();
         String payload = fields[3].trim();
 
-        // Fields Check
-        if (fields.length != 4) 
-        {
-            System.out.println("Error. Invalid number of fields at line " + lineNumber + ".\nExpected 4, recieved "+ fields.length);
-            return null;
-        }
         // Name Check
         if (name.isEmpty()) 
         {
@@ -371,7 +421,7 @@ class Hangar
 
         }catch (NumberFormatException ex) 
         {
-            System.out.println("Error. Line at " + lineNumber + " has invalid year and or weight capacity(Is it a number?).");
+            System.out.println("Error. Line at " + lineNumber + " has invalid year and or weight capacity(Is it a number?)");
             return null;
         }
 
@@ -413,6 +463,7 @@ abstract class Drone
         this.manufacturerName = manufacturerName;
         this.manufacturerYear = manufacturerYear;
         this.payloadKg = payloadKg;
+        this.type = type;
     }
 
     public String getManufacturer()
@@ -445,7 +496,6 @@ abstract class Drone
 
 /**
  * Priority Drone
- * extends Drone
  */
 class PriorityDrone extends Drone 
 {
