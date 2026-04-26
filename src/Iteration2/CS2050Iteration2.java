@@ -1,12 +1,17 @@
+package Iteration2;
+// TODO: REMOVE THIS
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
  * 
  */
-public class cs2050ProjectIteration01
+public class CS2050Iteration2
 {
     public static void main(String[] args) 
     {
@@ -22,6 +27,7 @@ public class cs2050ProjectIteration01
 class Hangar 
 {
     ArrayList<Drone> dronesList = new ArrayList<Drone>(); // We will use Arraylists
+    Map<Integer, Drone>dronesMap = new HashMap<Integer, Drone>(); // Use Integer since our id number is an int
 
     /**
      * Iterates through ArrayList in Hangar Class and increments counter if
@@ -45,13 +51,12 @@ class Hangar
         return count;
     }
     /**
-     * Creates a new arraylist with a copy of droneList and uses binary search.
-     * Checks for each drone in dronesList if they match the search requirements and if true adds to the new list.
+     * Checks if drones are 
      * @param dronesList
      * @param manufacturer
      * @param type
      */
-    public void searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) 
+    public ArrayList<Drone> searchDronesByManufacturerAndType(ArrayList<Drone> dronesList, String manufacturer, String type) 
     {
         ArrayList<Drone> searchList = new ArrayList<>();
 
@@ -70,91 +75,59 @@ class Hangar
             }
         }
 
-        for (int i = 0; i < searchList.size(); i++) 
-        {
-            System.out.println(searchList.get(i));
-        }
+        searchList.sort(Comparator.comparingInt(Drone::getIDnumber)); // Use java collections comparator to return a sorted list
+
+        return searchList; // Return an array
+
     }
 
     /**
      * Creates a copy of dronesList and uses Selection sort to make a sorted arrayList by year (oldest to latest)
      * @param dronesList
      */
-    public void generateReportSortedByManufacturingYear(ArrayList<Drone> dronesList) 
+    public ArrayList<Drone> generateReportSortedByManufacturingYear(ArrayList<Drone> dronesList) 
     {
         ArrayList<Drone> sortedByYear = new ArrayList<>(dronesList);
 
-        for (int i = 0; i < sortedByYear.size() - 1; i++)
-        {
-            int min = i;
-            for (int j = i + 1; j < sortedByYear.size(); j++)
-            {
-                if (sortedByYear.get(j).getManufacturerYear() < sortedByYear.get(min).getManufacturerYear())
-                {
-                    min = j;
-                }
-            }
-            if (min != i)
-            {
-                Drone temp = sortedByYear.get(i);
-                sortedByYear.set(i, sortedByYear.get(min));
-                sortedByYear.set(min, temp);
-            }
-        }
+        sortedByYear.sort(Comparator.comparing(Drone::getManufacturerYear));
 
-        for (int i = 0; i < sortedByYear.size(); i++)
-        {
-            System.out.println(sortedByYear.get(i));
-        }
-
+        return sortedByYear;
     }
 
     /**
      * Creates a copy of dronesList and uses selection sort to make a sorted arrayList by payload capacity.
      * @param dronesList
      */
-    public void generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) 
+    public ArrayList<Drone> generateReportSortedByPayloadCapacity(ArrayList<Drone> dronesList) 
     {
 
         ArrayList<Drone> sortedPayloadKG = new ArrayList<>(dronesList);
 
-        for (int i = 0; i < sortedPayloadKG.size() - 1; i++)
-        {
-            int min = i;
-            for (int j = i + 1; j < sortedPayloadKG.size(); j++)
-            {
-                if (sortedPayloadKG.get(j).getPayloadKg() < sortedPayloadKG.get(min).getPayloadKg())
-                {
-                    min = j;
-                }
-            }
-            // Use <arraylist>.set(i, temp)
-            if (min != i)
-            {
-                Drone temp = sortedPayloadKG.get(i);
-                sortedPayloadKG.set(i, sortedPayloadKG.get(min));
-                sortedPayloadKG.set(min, temp);
-            }
-        }
+        sortedPayloadKG.sort(Comparator.comparing(Drone::getPayloadKg));
 
-        // Print output
-        for (int i = 0; i < sortedPayloadKG.size(); i++) 
-        {
-            System.out.println(sortedPayloadKG.get(i));
-        }
-
+        return sortedPayloadKG;
     }
 
     /**
      * Displays every drone in droneList
      */
-    public void displayHangarInventory() 
+    public void displayHangarInventory() // Drone
     {
         for (int i = 0; i < dronesList.size(); i++) 
         {
             System.out.println(dronesList.get(i));
         }
     }
+
+    // TODO: Search Drone by ID
+
+    // TODO: Add drone to Maitenance queue
+
+    // TODO: View next drone in maitenance queue
+
+    // TODO: Process next drone in maitenance queue
+    
+    // TODO: Display miatenance queue
 
     /**
      * Menu system that uses case switching to determine output
@@ -170,10 +143,15 @@ class Hangar
             "1. Load Drones from CSV",
             "2. Display Hangar Inventory",
             "3. Search Drones (Manufacturer & Type)",
-            "4. View Inventory Sorted by Payload (Manual Sort)",
-            "5. View Inventory Sorted by Year (Manual Sort)",
+            "4. View Inventory Sorted by Payload",
+            "5. View Inventory Sorted by Year",
             "6. Count Drones by Manufacturer",
-            "7. Exit"
+            "7. Search Drone by ID",
+            "8. Add Drone to Maintenance Queue",
+            "9. View Next Drone in Queue",
+            "10. Process Next Drone in Queue",
+            "11. Display Queue",
+            "12. Exit"
         };
 
         while (runtime) {
@@ -276,6 +254,21 @@ class Hangar
                         }
                         break;
                     case 7:
+
+                        break;
+                    case 8:
+
+                        break;
+                    case 9:
+
+                        break;
+                    case 10:
+
+                        break;
+                    case 11:
+
+                        break;
+                    case 12:
                         // Exit
                         System.out.println("Exiting...");
                         runtime = false;
@@ -309,6 +302,7 @@ class Hangar
         if (drone != null) 
         {
             this.dronesList.add(drone);
+            this.dronesMap.put(drone.getIDnumber(), drone);
             return true;
         } else 
         {
@@ -457,6 +451,8 @@ abstract class Drone
     private int manufacturerYear;
     private double payloadKg;
     private String type;
+    private static int ID = 1000;
+    private int droneID;
 
     public Drone(String type, String manufacturerName, int manufacturerYear, double payloadKg) 
     {
@@ -464,6 +460,11 @@ abstract class Drone
         this.manufacturerYear = manufacturerYear;
         this.payloadKg = payloadKg;
         this.type = type;
+
+        // Hashmap ID numbers 
+        // essentially is an internal ID tracker (integer) for tracking how many drones exist at a given time 
+        this.droneID = ID;
+        ID++;
     }
 
     public String getManufacturer()
@@ -486,6 +487,11 @@ abstract class Drone
         return this.type;
     }
 
+    public int getIDnumber()
+    {
+        return this.droneID;
+    }
+
     @Override
     public String toString() 
     {
@@ -496,7 +502,6 @@ abstract class Drone
 
 /**
  * Priority Drone
-
  */
 class PriorityDrone extends Drone 
 {
@@ -508,7 +513,7 @@ class PriorityDrone extends Drone
     @Override
     public String toString()
     {
-        return super.getType() + " " + super.toString();
+        return super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
     }
 
 }
@@ -526,7 +531,7 @@ class StandardDrone extends Drone
     @Override
     public String toString()
     {
-        return super.getType() + " " + super.toString();
+        return super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
     }
 
 }
