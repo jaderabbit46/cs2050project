@@ -77,7 +77,7 @@ class Hangar
 
         searchList.sort(Comparator.comparingInt(Drone::getIDnumber)); // Use java collections comparator to return a sorted list
 
-        return searchList; // Return an array
+        return searchList; // Return an array (Collections result)
 
     }
 
@@ -91,7 +91,7 @@ class Hangar
 
         sortedByYear.sort(Comparator.comparing(Drone::getManufacturerYear));
 
-        return sortedByYear;
+        return sortedByYear; // Return collections result 
     }
 
     /**
@@ -119,7 +119,23 @@ class Hangar
         }
     }
 
-    // TODO: Search Drone by ID
+    /**
+     * Searches the hashmap and returns a drone if found.
+     * @param dronesList
+     * @return
+     */
+    public Drone searchDroneByID(Map<Integer, Drone> dronesMap, int id)
+    {
+        if (dronesMap.containsKey(id))
+        {
+            return dronesMap.get(id);
+        }
+        else
+        {
+            return null;
+        }
+
+    }
 
     // TODO: Add drone to Maitenance queue
 
@@ -209,6 +225,7 @@ class Hangar
                             input.nextLine();
 
                             // Ultimately made it more type safe for testing so it checks both single letters and the word
+                            // TODO: printout
                             if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
                             {
                                 searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
@@ -232,11 +249,13 @@ class Hangar
                         else
                         {
                             generateReportSortedByPayloadCapacity(dronesList);
+                            // TODO: printout
                         }
                         break;
                     case 5:
                         // View Inventory by Year
                         generateReportSortedByManufacturingYear(dronesList);
+                        // TODO: printout
                         break;
                     case 6:
                         // Count drone by manufacturer
@@ -254,6 +273,20 @@ class Hangar
                         }
                         break;
                     case 7:
+                        // Search drone by ID
+                        System.out.println("Type the ID you want to search (IDs start at 1000)");
+                        int searchID = input.nextInt();
+                        input.nextLine();
+
+                        Drone idDrone = searchDroneByID(dronesMap, searchID);
+                        if(idDrone != null)
+                        {
+                            System.out.println("Drone ID search result: " + idDrone.toString());
+                        }
+                        else
+                        {
+                            System.out.println("Error: Invalid ID input (Is it a number?)");
+                        }
 
                         break;
                     case 8:
@@ -302,7 +335,9 @@ class Hangar
         if (drone != null) 
         {
             this.dronesList.add(drone);
-            this.dronesMap.put(drone.getIDnumber(), drone);
+            
+            // Add a new drone to the HashMap -> dronesMap as well
+            this.dronesMap.put(drone.getIDnumber(), drone); 
             return true;
         } else 
         {
@@ -451,7 +486,8 @@ abstract class Drone
     private int manufacturerYear;
     private double payloadKg;
     private String type;
-    private static int ID = 1000;
+    // ID start value will be 1000 for the sake of the assignment
+    private static int ID = 1000; 
     private int droneID;
 
     public Drone(String type, String manufacturerName, int manufacturerYear, double payloadKg) 
