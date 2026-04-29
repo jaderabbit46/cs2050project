@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -27,7 +28,8 @@ public class CS2050Iteration2
 class Hangar 
 {
     ArrayList<Drone> dronesList = new ArrayList<Drone>(); // We will use Arraylists
-    Map<Integer, Drone>dronesMap = new HashMap<Integer, Drone>(); // Use Integer since our id number is an int
+    Map<Integer, Drone> dronesMap = new HashMap<Integer, Drone>(); // Use Integer since our id number is an int
+    Queue<Drone> droneMaintenanceQueue = new Queue<>(); // Use Queue Class
 
     /**
      * Iterates through ArrayList in Hangar Class and increments counter if
@@ -570,4 +572,50 @@ class StandardDrone extends Drone
         return super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
     }
 
+}
+
+/**
+ * Queue is used to create and manage queue operations 
+ * Use <E> for generic since we could expand it to different operations
+ */
+class Queue<E>
+{
+    LinkedList<E> queue;
+
+    public Queue()
+    {
+        queue = new LinkedList<>();
+    }
+
+    public E dequeue()
+    {
+        // Linked list implementation requires poll for Queue operations (FIFO)
+        // Removes Head of linked list
+        return queue.poll();
+    }
+
+    public void enqueue(E object)
+    {
+        // Linked list implementation for queues needs offer instead of add for FIFO
+        // Adds at end of the list, kind of like add()
+        queue.offer(object);
+    }
+
+    public E peek()
+    {
+        return queue.peek();
+    }
+
+    public boolean isEmpty()
+    {
+        return queue.isEmpty();
+    }
+
+    public void printQueue()
+    {
+        for(E object : queue)
+        {
+            System.out.println(object);
+        }
+    }
 }
