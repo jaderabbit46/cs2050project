@@ -53,7 +53,8 @@ class Hangar
         return count;
     }
     /**
-     * Checks if drones are 
+     * Checks the drones ArrayList for the specified manufacturer name and drone type (priority or standard)
+     * If it matches both criteria, then adds it to a new list and runs collections.sort. Returns the list
      * @param dronesList
      * @param manufacturer
      * @param type
@@ -76,7 +77,6 @@ class Hangar
                }
             }
         }
-
         searchList.sort(Comparator.comparingInt(Drone::getIDnumber)); // Use java collections comparator to return a sorted list
 
         return searchList; // Return an array (Collections result)
@@ -126,7 +126,7 @@ class Hangar
      * @param dronesList
      * @return
      */
-    public Drone searchDroneByID(Map<Integer, Drone> dronesMap, int id)
+    public Drone searchDroneByID(int id)
     {
         if (dronesMap.containsKey(id))
         {
@@ -139,14 +139,51 @@ class Hangar
 
     }
 
-    // TODO: Add drone to Maitenance queue
+    // TODO: Add drone to Maitenance queue DEBUG
+    public void addDroneToMaintenanceQueue(Drone drone)
+    {
+        droneMaintenanceQueue.enqueue(drone);
+    }
 
-    // TODO: View next drone in maitenance queue
+    // TODO: View next drone in maintenance queue DEBUG
+    /**
+     *  Returns the drone
+     * @param queue
+     */
+    public Drone viewNextDrone()
+    {   
+        if (droneMaintenanceQueue.isEmpty()) 
+        {
+            System.out.println("Error. Maintenance Queue is empty.");
+            return null;
+        }
+        else
+        { 
+            return droneMaintenanceQueue.peek();
+        }
+        
+    }
 
-    // TODO: Process next drone in maitenance queue
+    /**
+     * Processes the drone in the specified linked list queue. 
+     * Abstracted to a dequeue method in the Queue<E> class
+     * @param queue
+     */
+    // TODO: DEBUG
+    public void processDrone()
+    {
+        try
+        {
+            droneMaintenanceQueue.dequeue();
+        }
+        catch (NullPointerException e)
+        {
+            System.out.println("Error. Unable to process drone. (Is Maintenance Queue empty?)");
+            return;
+        }
+        
+    }
     
-    // TODO: Display miatenance queue
-
     /**
      * Menu system that uses case switching to determine output
      * There might be a better way of null checking (Method null-checking vs menu null-checking)
@@ -280,7 +317,7 @@ class Hangar
                         int searchID = input.nextInt();
                         input.nextLine();
 
-                        Drone idDrone = searchDroneByID(dronesMap, searchID);
+                        Drone idDrone = searchDroneByID(searchID);
                         if(idDrone != null)
                         {
                             System.out.println("Drone ID search result: " + idDrone.toString());
@@ -292,15 +329,57 @@ class Hangar
 
                         break;
                     case 8:
+                        // Add drone to maintenance queue
+                        System.out.println("What ID do you want to add to the Maintenance queue?");
+                        searchID = input.nextInt();
+                        input.nextLine();
+
+                        if (searchDroneByID(searchID) != null && droneMaintenanceQueue.contains(searchDroneByID(searchID)))
+                        {
+                            System.out.println("Drone ID: " + searchID + " Added to Maintenance Queue");
+                        }
+                        else
+                        {
+                            System.out.println("Error: Invalid ID value (Does it exist?)");
+                        }
 
                         break;
                     case 9:
+                        // TODO: View next drone in queue
+                        if (droneMaintenanceQueue.isEmpty())
+                        {
+                            System.out.println("Error. Maintenance Queue is empty.");
+                        }
+                        else
+                        {
+                            System.out.println(droneMaintenanceQueue.peek().toString());
+                        }   
 
                         break;
                     case 10:
+                        // TODO: Process next drone
+                        if (droneMaintenanceQueue.isEmpty())
+                        {
+                            System.out.println("Error. Maintenance Queue is empty.");
+                        }
+                        else
+                        {
+                            System.out.println(droneMaintenanceQueue.peek().toString() + " Marked as Processed.");
+                            droneMaintenanceQueue.dequeue();
+                        }   
 
                         break;
                     case 11:
+                        // TODO: View queue
+                        if (droneMaintenanceQueue.isEmpty())
+                        {
+                            System.out.println("Error. Maintenance Queue is empty.");
+                        }
+                        else
+                        {
+                            System.out.println(droneMaintenanceQueue.peek().toString() + " Marked as Processed.");
+                            hangar.processDrone();
+                        }   
 
                         break;
                     case 12:
@@ -618,4 +697,18 @@ class Queue<E>
             System.out.println(object);
         }
     }
+
+    public boolean contains(E item)
+    {
+        for (E object : queue)
+        {
+            if (item == object)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
