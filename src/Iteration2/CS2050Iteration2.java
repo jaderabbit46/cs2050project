@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class CS2050Iteration2
 {
-    public static void main(String[] args) 
+    public static void main(String[] args)
     {
         Hangar hangar1 = new Hangar();
         hangar1.showMenu(hangar1);
@@ -29,7 +29,7 @@ class Hangar
 {
     ArrayList<Drone> dronesList = new ArrayList<Drone>(); // We will use Arraylists
     Map<Integer, Drone> dronesMap = new HashMap<Integer, Drone>(); // Use Integer since our id number is an int
-    Queue<Drone> droneMaintenanceQueue = new Queue<>(); // Use Queue Class
+    Queue<Drone> droneMaintenanceQueue = new Queue<Drone>(); // Use Queue Class
 
     /**
      * Iterates through ArrayList in Hangar Class and increments counter if
@@ -139,59 +139,72 @@ class Hangar
 
     }
 
-    // TODO: Add drone to Maitenance queue DEBUG
     public void addDroneToMaintenanceQueue(Drone drone)
     {
-        droneMaintenanceQueue.enqueue(drone);
+        if (!droneMaintenanceQueue.isEmpty())
+        {
+            droneMaintenanceQueue.enqueue(drone);
+        }
+        else
+        {
+            return;
+        }
     }
 
-    // TODO: View next drone in maintenance queue DEBUG
     /**
-     *  Returns the drone
+     *  Returns the drone at the top of the maintenance queue
      * @param queue
      */
     public Drone viewNextDrone()
     {   
-        if (droneMaintenanceQueue.isEmpty()) 
+        if (!droneMaintenanceQueue.isEmpty())
         {
-            System.out.println("Error. Maintenance Queue is empty.");
-            return null;
-        }
-        else
-        { 
             return droneMaintenanceQueue.peek();
         }
-        
+        else
+        {
+            return null;
+        }
     }
 
     /**
-     * Processes the drone in the specified linked list queue. 
-     * Abstracted to a dequeue method in the Queue<E> class
+     * Processes the drone in the specified linked list queue for the Drone Queue
      * @param queue
      */
-    // TODO: DEBUG
     public void processDrone()
     {
-        try
+        if (!droneMaintenanceQueue.isEmpty())
         {
             droneMaintenanceQueue.dequeue();
         }
-        catch (NullPointerException e)
+        else 
         {
-            System.out.println("Error. Unable to process drone. (Is Maintenance Queue empty?)");
             return;
         }
-        
+
+    }
+
+    /**
+     * Handles arrayList printing from helper methods (sorting, searching)
+     * @param list
+     */
+    public void printList(ArrayList<Drone> list)
+    {
+        for (Drone drone : list)
+        {
+            System.out.println(drone.toString());
+        }
     }
     
     /**
      * Menu system that uses case switching to determine output
-     * There might be a better way of null checking (Method null-checking vs menu null-checking)
+     * This menu must cover null cases since a method should assume null case will not happen 
      * @param hangar
      */
     public void showMenu(Hangar hangar)
     {
         Scanner input = new Scanner(System.in);
+        int searchID;
         boolean runtime = true;
 
         String menu[] = {
@@ -264,14 +277,13 @@ class Hangar
                             input.nextLine();
 
                             // Ultimately made it more type safe for testing so it checks both single letters and the word
-                            // TODO: printout
                             if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
                             {
-                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                                printList(searchDronesByManufacturerAndType(dronesList, manufacturer, droneType));
                             } 
                             else if (droneType.equalsIgnoreCase("Standard") || droneType.equalsIgnoreCase("Priority"))
                             {
-                                searchDronesByManufacturerAndType(dronesList, manufacturer, droneType);
+                                printList(searchDronesByManufacturerAndType(dronesList, manufacturer, droneType));
                             }
                             else 
                             {
@@ -287,14 +299,20 @@ class Hangar
                         }
                         else
                         {
-                            generateReportSortedByPayloadCapacity(dronesList);
-                            // TODO: printout
+                            printList(generateReportSortedByPayloadCapacity(dronesList));
                         }
                         break;
                     case 5:
                         // View Inventory by Year
-                        generateReportSortedByManufacturingYear(dronesList);
-                        // TODO: printout
+                        if (dronesList == null || dronesList.isEmpty())
+                        {
+                            System.out.println("Error. No Drones in Hangar.");
+                        }
+                        else
+                        {
+                            printList(generateReportSortedByManufacturingYear(dronesList));
+                        }
+        
                         break;
                     case 6:
                         // Count drone by manufacturer
@@ -314,38 +332,51 @@ class Hangar
                     case 7:
                         // Search drone by ID
                         System.out.println("Type the ID you want to search (IDs start at 1000)");
-                        int searchID = input.nextInt();
-                        input.nextLine();
-
-                        Drone idDrone = searchDroneByID(searchID);
-                        if(idDrone != null)
+    
+                        if (input.hasNextInt())
                         {
-                            System.out.println("Drone ID search result: " + idDrone.toString());
+                            searchID = input.nextInt();
+                            input.nextLine();
+                        
+                            Drone idDrone = searchDroneByID(searchID);
+                            if(idDrone != null)
+                            {
+                                System.out.println("Drone ID search result: " + idDrone.toString());
+                            }
+                            else
+                            {
+                                System.out.println("Error: Invalid ID input (Is it a number?)");
+                            }
                         }
-                        else
-                        {
-                            System.out.println("Error: Invalid ID input (Is it a number?)");
-                        }
-
                         break;
                     case 8:
                         // Add drone to maintenance queue
                         System.out.println("What ID do you want to add to the Maintenance queue?");
+                        
+                        if (input.hasNextInt())
+                        {
                         searchID = input.nextInt();
-                        input.nextLine();
-
-                        if (searchDroneByID(searchID) != null && droneMaintenanceQueue.contains(searchDroneByID(searchID)))
+                        input.nextLine(); 
+                        if (searchDroneByID(searchID) != null)
                         {
-                            System.out.println("Drone ID: " + searchID + " Added to Maintenance Queue");
+                            if (!droneMaintenanceQueue.contains(searchDroneByID(searchID)))
+                                {
+                                    System.out.println("Drone ID: " + searchID + " Added to Maintenance Queue");
+                                    droneMaintenanceQueue.enqueue(searchDroneByID(searchID));
+                                }
+                                else
+                                {
+                                    System.out.println("Error. Drone already in queue. ");
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("Error. Invalid ID value (Does it exist?)");
+                            }
                         }
-                        else
-                        {
-                            System.out.println("Error: Invalid ID value (Does it exist?)");
-                        }
-
                         break;
                     case 9:
-                        // TODO: View next drone in queue
+                        // View next drone in queue
                         if (droneMaintenanceQueue.isEmpty())
                         {
                             System.out.println("Error. Maintenance Queue is empty.");
@@ -357,7 +388,7 @@ class Hangar
 
                         break;
                     case 10:
-                        // TODO: Process next drone
+                        // Process next drone
                         if (droneMaintenanceQueue.isEmpty())
                         {
                             System.out.println("Error. Maintenance Queue is empty.");
@@ -370,16 +401,15 @@ class Hangar
 
                         break;
                     case 11:
-                        // TODO: View queue
+                        // View queue
                         if (droneMaintenanceQueue.isEmpty())
                         {
                             System.out.println("Error. Maintenance Queue is empty.");
                         }
                         else
                         {
-                            System.out.println(droneMaintenanceQueue.peek().toString() + " Marked as Processed.");
-                            hangar.processDrone();
-                        }   
+                           droneMaintenanceQueue.printQueue();
+                        }
 
                         break;
                     case 12:
@@ -655,7 +685,7 @@ class StandardDrone extends Drone
 
 /**
  * Queue is used to create and manage queue operations 
- * Use <E> for generic since we could expand it to different operations
+ * Use <E> for elements
  */
 class Queue<E>
 {
@@ -663,7 +693,7 @@ class Queue<E>
 
     public Queue()
     {
-        queue = new LinkedList<>();
+        queue = new LinkedList<E>();
     }
 
     public E dequeue()
@@ -676,7 +706,6 @@ class Queue<E>
     public void enqueue(E object)
     {
         // Linked list implementation for queues needs offer instead of add for FIFO
-        // Adds at end of the list, kind of like add()
         queue.offer(object);
     }
 
@@ -700,7 +729,7 @@ class Queue<E>
 
     public boolean contains(E item)
     {
-        for (E object : queue)
+        for (E object : this.queue)
         {
             if (item == object)
             {
