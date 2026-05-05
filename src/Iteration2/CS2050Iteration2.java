@@ -1,5 +1,5 @@
 package Iteration2;
-// TODO: REMOVE THIS
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -9,7 +9,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
+
 /**
+ * CS2050 Iteration02
+ * Drone hangar that manages drones with various methods.
  * 
  */
 public class CS2050Iteration2
@@ -113,7 +116,7 @@ class Hangar
     /**
      * Displays every drone in droneList
      */
-    public void displayHangarInventory() // Drone
+    public void displayHangarInventory()
     {
         for (int i = 0; i < dronesList.size(); i++) 
         {
@@ -139,6 +142,10 @@ class Hangar
 
     }
 
+    /**
+     * Addes a specified drone to the queue linked list. 
+     * @param drone
+     */
     public void addDroneToMaintenanceQueue(Drone drone)
     {
         if (!droneMaintenanceQueue.isEmpty())
@@ -523,7 +530,7 @@ class Hangar
     private static Drone parseDroneLine(String line, int lineNumber) 
     {
 
-        if (line.trim().isEmpty() || line == null) 
+        if (line == null || line.trim().isEmpty()) 
         {
             return null;
         }
@@ -642,7 +649,7 @@ abstract class Drone
     @Override
     public String toString() 
     {
-        String toString = "Manufacturer: " + this.manufacturerName + " Manufactured: " + this.manufacturerYear + " Weight Limit (KG): " + this.payloadKg;
+        String toString = "Manufacturer: " + this.manufacturerName + " | " + "Manufactured: " + this.manufacturerYear + " | " + " Weight Limit (KG): " + this.payloadKg;
         return toString;
     }
 }
@@ -660,7 +667,7 @@ class PriorityDrone extends Drone
     @Override
     public String toString()
     {
-        return super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
+        return "D" + super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
     }
 
 }
@@ -678,7 +685,7 @@ class StandardDrone extends Drone
     @Override
     public String toString()
     {
-        return super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
+        return "D" + super.getIDnumber() + " | " + super.getType() + " | " + super.toString();
     }
 
 }
@@ -727,6 +734,11 @@ class Queue<E>
         }
     }
 
+    /**
+     * Checks if item is in the queue already.
+     * @param item
+     * @return
+     */
     public boolean contains(E item)
     {
         for (E object : this.queue)
