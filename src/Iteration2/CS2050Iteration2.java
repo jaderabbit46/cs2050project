@@ -70,11 +70,7 @@ class Hangar
         {
             if (dronesList.get(i).getManufacturer().equalsIgnoreCase(manufacturer))
             {
-               if (type.equalsIgnoreCase("Priority") || type.equalsIgnoreCase("P"))
-               {
-                    searchList.add(dronesList.get(i));
-               }
-               if (type.equalsIgnoreCase("Standard") || type.equalsIgnoreCase("S"))
+               if (type.equalsIgnoreCase(dronesList.get(i).getType()))
                {
                     searchList.add(dronesList.get(i));
                }
@@ -284,12 +280,14 @@ class Hangar
                             input.nextLine();
 
                             // Ultimately made it more type safe for testing so it checks both single letters and the word
-                            if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("P")) 
+                            if (droneType.equalsIgnoreCase("S") || droneType.equalsIgnoreCase("Standard")) 
                             {
+                                droneType = "Standard";
                                 printList(searchDronesByManufacturerAndType(dronesList, manufacturer, droneType));
                             } 
-                            else if (droneType.equalsIgnoreCase("Standard") || droneType.equalsIgnoreCase("Priority"))
+                            else if ( droneType.equalsIgnoreCase("P") || droneType.equalsIgnoreCase("Priority"))
                             {
+                                droneType = "Priority";
                                 printList(searchDronesByManufacturerAndType(dronesList, manufacturer, droneType));
                             }
                             else 
@@ -604,7 +602,7 @@ abstract class Drone
     private int manufacturerYear;
     private double payloadKg;
     private String type;
-    // ID start value will be 1000 for the sake of the assignment
+    // ID start value will be 1000
     private static int ID = 1000; 
     private int droneID;
 
